@@ -1,0 +1,57 @@
+import React, { Component, useState } from "react";
+import { Container, Modal, Button } from "react-bootstrap";
+import api from '../server/api';
+import "./FilmeElement.css";
+
+class FilmeElement extends Component {
+    state = {
+        filmes: [],
+        show: false,
+    }
+
+    async componentDidMount() {
+        const response = await api.get();
+        this.setState({ filmes: response.data.results });
+
+        const Close = this.setState({show: false});
+        const Show = this.setState({show: true});
+    }
+
+    render() {
+        const { filmes } = this.state;
+        const { show } = this.state;
+        console.log(show);
+        const handleClose = Close;
+        const handleShow = {Show};
+
+        return (
+            <Container>
+		{filmes.map(filme => (
+
+	    <li key={filme.id}>
+	        <img src={"https://image.tmdb.org/t/p/w500" + filme.poster_path} alt={filme.original_title} />
+	        <span>{filme.vote_average}</span>
+        <Button variant="primary" onClick={handleShow()}>
+            Ver
+        </Button>
+        <Modal show={show} onHide={handleClose()}>
+            <Modal.Header closeButton>
+                <Modal.Title>{filme.original_title}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>{filme.overview}</Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose()}>
+                    Close
+                </Button>
+                <Button variant="primary" onClick={handleClose()}>
+                    Save Changes
+               </Button>
+            </Modal.Footer>
+        </Modal>
+    </li>
+))}
+</Container>
+        );
+    }
+}
+export default FilmeElement;
